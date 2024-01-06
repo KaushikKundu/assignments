@@ -5,7 +5,12 @@
 */
 
 function isAnagram(str1, str2) {
-
+ let newStr =  str1.reverse();
+ if(str2 === newStr){
+  return true;
+ }else{
+  return false;
+ }
 }
 
 module.exports = isAnagram;
