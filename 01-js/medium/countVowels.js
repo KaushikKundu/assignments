@@ -6,7 +6,14 @@
 */
 
 function countVowels(str) {
-    // Your code here
+    const vowels = ['a', 'e', 'i', 'o', 'u'];
+    let count = 0;
+    str.toLowercase.forEach(element => {
+      if(element =='a'||element == 'e' || element == 'i'|| element == 'o'||element == 'u' ){
+          count++;
+      }
+    });
+    return count;
 }
 
 module.exports = countVowels;
