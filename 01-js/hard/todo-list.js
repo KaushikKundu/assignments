@@ -11,29 +11,34 @@
 */
 
 class Todo {
-  constructor(todolist){
-    todolist = [];
+  constructor(){
+    this.todolist = [];
   }
   add(todo) {
-    todolist.push(todo);
+    this.todolist.push(todo);
   }
   remove(index){
-    delete todolist[index];
-    for(let i=index; i<todolist.length(); i++){
-      todolist[i] = todolist[i+1];
+    if(index >= 0 && index < this.todolist.length ){
+      this.todolist.splice(index,1);
     }
   }
   update(index,item){
-    todolist[index] = item;
+    if(index >= 0 && index < this.todolist.length ){
+      this.todolist[index] = item;
+    }
   }
   getAll(){
-    return todolist;
+    return this.todolist;
   }
   get(index){
-    return todolist[index];
+    if(index >= 0 && index < this.todolist.length ){
+      return this.todolist[index];
+    }else{
+      return null;
+    }
   }
   clear(){
-    todolist.length() = 0; // todolsit = []
+   this.todolist.length = 0; // todolsit = []
   }
 
 }
