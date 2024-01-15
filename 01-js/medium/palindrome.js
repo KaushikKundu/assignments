@@ -4,8 +4,12 @@
 */
 
 function isPalindrome(str) {
-  if (str.reverse == str)
+  str = str.replace(/[^a-zA-Z ]/g,'').toLowerCase();
+  const newStr = str.split('').reverse().join('').toLowerCase();
+  if (newStr == str){
     return true;
+  }
+  return false;
 }
-
+console.log(isPalindrome('Able, was I ere I saw Elba!'));
 module.exports = isPalindrome;

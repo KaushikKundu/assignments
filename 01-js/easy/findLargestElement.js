@@ -7,12 +7,12 @@
 
 function findLargestElement(numbers) {
     let max = numbers[0];
-    numbers.map((num) => {
+    numbers.forEach((num) => {
         if(num > max){
             max = num;
         };
-        return max;
     })
+    return max;
 }
 
 module.exports = findLargestElement;
