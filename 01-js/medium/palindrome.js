@@ -4,12 +4,11 @@
 */
 
 function isPalindrome(str) {
-  str = str.replace(/[^a-zA-Z ]/g,'').toLowerCase();
-  const newStr = str.split('').reverse().join('').toLowerCase();
-  if (newStr == str){
-    return true;
-  }
-  return false;
+  const cleanedExp = str.replace(/[^a-zA-Z]/g,'').toLowerCase();
+  const revStr = cleanedExp.split('').reverse().join('').toLowerCase();
+  console.log(revStr);
+  console.log(cleanedExp);
+  return cleanedExp === revStr;
 }
-console.log(isPalindrome('Able, was I ere I saw Elba!'));
+console.log(isPalindrome('race car'));
 module.exports = isPalindrome;

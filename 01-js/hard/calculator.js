@@ -16,6 +16,46 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+  add(n) {
+    this.result += n;
+  }
+  subtract(n) {
+    this.result -= n;
+  }
+  multiply(n) {
+    this.result *= n;
+  }
+  divide(n) {
+    if(n == 0){
+      throw new Error("Can't divide by zero");
+    }else{
+
+      this.result /= n;
+    }
+  }
+  clear(){
+    this.result =0;
+  }
+  getResult(){
+    return this.result;
+  }
+
+  calculate(str){
+    const exp = str.replace(/\s+\g/,'');
+    try {
+      this.result = eval(exp);
+      if(isNaN(this.result) || !isFinite(this.result)){
+        throw new Error("Invalid expression")
+      }
+    } catch (error) {
+      throw new Error("Invalid expression");
+    }
+  }
+  
+}
 
 module.exports = Calculator;
