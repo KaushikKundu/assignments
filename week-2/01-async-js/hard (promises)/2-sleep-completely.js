@@ -9,6 +9,7 @@ function sleep(milliseconds) {
         let start = Date.now()
         while(Date.now() - start < milliseconds){}
         resolve();
+        // reject('error');
 })
 }
 
