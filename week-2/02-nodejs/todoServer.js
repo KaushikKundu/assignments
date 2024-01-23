@@ -40,10 +40,47 @@
   Testing the server - run `npm run test-todoServer` command in terminal
  */
   const express = require('express');
+  const fs = require('fs');
   const bodyParser = require('body-parser');
-  
+  const port = 3000;
   const app = express();
-  
   app.use(bodyParser.json());
   
+  app.get('/todos', (req, res) => {
+    fs.readFile('todos.json', (err, data) => {
+      if(err){
+        console.error(err);
+        res.send("internal server error.").status(500)
+      }
+      try{
+        const todos = JSON.parse(data);
+        res.send(todos).status(200);
+      }catch(parseError){
+        console.error(parseError);
+        res.send("internal server error.").status(500)
+      }
+    })
+  })
+  app.post('/todos', (req, res) => {
+    fs.readFile('todos.json', (err, data) => {
+      const todos = JSON.parse(data);
+      if(todos.length === 0){
+        req.body.id = 1;
+        todos.push(req.body);
+      }else{
+        req.body.id = todos[todos.length - 1].id + 1; // todos.length + 1
+        todos.push(req.body);
+      }
+    })
+  });
+
+    fs.writeFile('todos.json', JSON.stringify(req.body), (err) => {
+      if (err) throw err;
+      res.send(req.body)
+    })
+  
+
+  app.listen(port, () =>{
+  console.log(`Todo server is running on port ${port}`);
+})
   module.exports = app;
