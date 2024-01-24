@@ -39,48 +39,88 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-  const express = require('express');
-  const fs = require('fs');
-  const bodyParser = require('body-parser');
-  const port = 3000;
-  const app = express();
-  app.use(bodyParser.json());
-  
-  app.get('/todos', (req, res) => {
-    fs.readFile('todos.json', (err, data) => {
-      if(err){
-        console.error(err);
-        res.send("internal server error.").status(500)
-      }
-      try{
-        const todos = JSON.parse(data);
-        res.send(todos).status(200);
-      }catch(parseError){
-        console.error(parseError);
-        res.send("internal server error.").status(500)
-      }
-    })
-  })
-  app.post('/todos', (req, res) => {
-    fs.readFile('todos.json', (err, data) => {
-      const todos = JSON.parse(data);
-      if(todos.length === 0){
-        req.body.id = 1;
-        todos.push(req.body);
-      }else{
-        req.body.id = todos[todos.length - 1].id + 1; // todos.length + 1
-        todos.push(req.body);
-      }
-    })
+const express = require("express");
+const fs = require("fs");
+const bodyParser = require("body-parser");
+const port = 3001;
+const app = express();
+app.use(bodyParser.json());
+// used for parsing json data in req body to js object
+let todos = loadTodos(); // Load todos at the beginning
+
+function loadTodos() {
+  try {
+    const data = fs.readFileSync("./todos.json", "utf8");
+    return JSON.parse(data) || [];
+  } catch (error) {
+    console.error("Error loading todos:", error.message);
+    return [];
+  }
+}
+
+const saveTodos = () => {
+  fs.writeFileSync("./todos.json", JSON.stringify(todos,null,2), (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("saved");
+    }
   });
+};
 
-    fs.writeFile('todos.json', JSON.stringify(req.body), (err) => {
-      if (err) throw err;
-      res.send(req.body)
+app.get("/todos", (req, res) => {
+  res.status(200).json(todos);
+});
+
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  todos = loadTodos();
+  const todo = todos.find((todo) => todo.id === id);
+  if (todo) {
+    res.status(200).json({ todo });
+  } else {
+    res.status(404).json({ message: "404 Not found" });
+  }
+});
+app.post("/todos", (req, res) => {
+  const data = req.body;
+  const id = todos.length + 1;
+  data.id = id;
+  loadTodos();
+  todos.push(data);
+  saveTodos();
+  res.status(201).json({ id });
+});
+
+app.put("/todos/:id", (req, res) => {
+  loadTodos();
+  const todo = todos.find((todo) => todo.id === parseInt(req.params.id));
+  const { title, description, completed } = req.body;
+  if (todo) {
+    todo.title = title;
+    todo.description = description;
+    todo.completed = completed;
+    saveTodos();
+    res.status(200).json(todo);
+  } else {
+    res.status(404).json({ message: "404 Not found" });
+  }
+});
+app.delete("/todos/:id", (req, res) => {
+  loadTodos();
+  const id = parseInt(req.params.id);
+  const todoIndex = todos.find((todo) => todo.id === id);
+  if (todoIndex !== -1) {
+    todos.splice(todos.indexOf(todo), 1);
+    todos.forEach((todo,index) => {
+      todo.id = index + 1;
     })
-  
-
-  app.listen(port, () =>{
+    res.status(200).json(todo);
+  } else {
+    res.status(404).json({ message: "404 Not found" });
+  }
+});
+app.listen(port, () => {
   console.log(`Todo server is running on port ${port}`);
-})
-  module.exports = app;
+});
+module.exports = app;
