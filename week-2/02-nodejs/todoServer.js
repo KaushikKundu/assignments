@@ -42,7 +42,7 @@
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
-const port = 3001;
+const port = 3000;
 const app = express();
 app.use(bodyParser.json());
 // used for parsing json data in req body to js object
