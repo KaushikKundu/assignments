@@ -37,8 +37,11 @@ function verifyJwt(token) {
     try{
         const decoded = jwt.verify(token, jwtPassword);
         console.log(decoded);
+        return true;
+
     }catch(error){
         console.log(error.message);
+        return false;
     }
 }
 
@@ -52,13 +55,11 @@ function verifyJwt(token) {
 function decodeJwt(token) {
     try{
         const decoded = jwt.decode(token, { complete: true });
-
+        console.log(decoded.payload);
+        return true;
     }catch(err) {
-        if(err.name === 'TokenExpiredError') {
-            return false;
-        }else{
-            return true;
-        }
+        console.log(err.message);
+        return false;
     }
     
 }
