@@ -1,7 +1,9 @@
 const { Router } = require("express");
 const adminMiddleware = require("../middleware/admin");
 const router = Router();
-
+const { Admin, User, Course } = require("../db");
+const uuid = require('uuid')
+const {id} = require('mongoose')
 // Admin Routes
 router.post('/signup',async (req, res) => {
     // Implement admin signup logic
@@ -24,16 +26,29 @@ router.post('/signup',async (req, res) => {
 });
 
 router.post('/courses', adminMiddleware, (req, res) => {
-    const username = req.headers.username;
-    const password = req.headers.password;
+    const admin = req.headers.username;
     const title = req.body.title;
     const description = req.body.description;
     const price = req.body.price;
     const imageLink = req.body.imageLink;
+    const courseId = uuid.v4(); 
+    
+    const course = new Course({
+        admin,
+        title,
+        description,
+        price,
+        imageLink,
+        courseId
+    });
+    //const existingCourse = Course.findOne({ title });
+    course.save();
+    res.json({message:'Course created successfully', courseId: course._id});
 });
 
-router.get('/courses', adminMiddleware, (req, res) => {
-    // Implement fetching all courses logic
+router.get('/courses', adminMiddleware, async (req, res) => {
+    const courseList = await Course.find({username: req.username}); 
+    return res.json({courseList});
 });
 
 module.exports = router;
