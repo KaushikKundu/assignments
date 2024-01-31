@@ -3,12 +3,18 @@ const adminMiddleware = require("../middleware/admin");
 const router = Router();
 
 // Admin Routes
-router.post('/signup', (req, res) => {
+router.post('/signup', adminMiddleware, (req, res) => {
     // Implement admin signup logic
+    const username = req.headers.username;
+    
+
 });
 
-router.post('/signin', (req, res) => {
+router.post('/signin',  (req, res) => {
     // Implement admin signup logic
+    const username = req.headers.username;
+
+
 });
 
 router.post('/courses', adminMiddleware, (req, res) => {
